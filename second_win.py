@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import Qt, QTimer, QTime
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QLineEdit, QLCDNumber
 from instr import *
 from final_win import FinalWin
@@ -44,7 +44,7 @@ class TestWin(QWidget):
 
         self.btn_total = QPushButton(txt_sendresults)
 
-        self.timer = QLabel(txt_timer)
+        self.text_timer = QLabel(txt_timer)
 
         self.h_line = QHBoxLayout()
 
@@ -71,7 +71,7 @@ class TestWin(QWidget):
 
         self.v_line2 = QVBoxLayout()
 
-        self.v_line2.addWidget(self.timer, alignment=Qt.AlignRight)
+        self.v_line2.addWidget(self.text_timer, alignment=Qt.AlignRight)
                 
         self.h_line.addLayout(self.v_line)
         self.h_line.addLayout(self.v_line2)
@@ -79,6 +79,24 @@ class TestWin(QWidget):
 
     def connects(self):
         self.btn_total.clicked.connect(self.next_click)
+        self.btn_begin_1.clicked.connect(self.first_timer)
+
+    def first_timer(self):
+        global time
+        
+        time = QTime(0, 0, 15)
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.timer1Event)
+        self.timer.start(1000)
+
+    def timer1Event(self):
+        global time
+
+        time = time.addSecs(-1)
+        self.text_timer.setText(time.toString('hh:mm:ss'))
+
+        if time.toString('hh:mm:ss') == '00:00:00':
+            self.timer.stop()
 
     def next_click(self):
         self.hide()
